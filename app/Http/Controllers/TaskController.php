@@ -9,6 +9,17 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $apiKey = $request->header('API-Key');
+            if ($apiKey !== 'my-api-key') {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            return $next($request);
+        });
+    }
+
     public function index(): Collection
     {
         return Task::all();
